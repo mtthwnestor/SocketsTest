@@ -4,7 +4,7 @@ import sys
 import socket
 
 
-class MyServer:
+class Server:
 
     # Define some understandable constants
     IP = socket.AF_INET
@@ -55,6 +55,6 @@ class MyServer:
 
 if __name__ == "__main__":
 
-    server = MyServer("127.0.0.1", 5001)
+    server = Server("127.0.0.1", 5001)
 
     server.run()

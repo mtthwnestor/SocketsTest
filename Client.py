@@ -4,7 +4,7 @@ import sys
 import socket
 
 
-class MyClient:
+class Client:
 
     # Define some understandable constants
     IP = socket.AF_INET
@@ -44,6 +44,6 @@ class MyClient:
 
 if __name__ == "__main__":
 
-    client = MyClient("127.0.0.1", 5001)
+    client = Client("127.0.0.1", 5001)
 
     client.run()
