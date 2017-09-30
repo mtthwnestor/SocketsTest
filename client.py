@@ -14,7 +14,7 @@ class MyClient:
 
     def __init__(self, host, port):
 
-        # Please define the listening address and port on initialisation.
+        # Please define the server address and port on initialisation.
         self.host = host
         self.port = port
 
