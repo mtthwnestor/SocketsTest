@@ -21,6 +21,7 @@ class ClientThread(Thread):
 
                 message = input("> ")
                 self.connection.send(message.encode())
+        #TODO: Figure out how to handle closed connections.
         except KeyboardInterrupt:
             print("Closed connection: " + self.address)
             self.connection.close()
