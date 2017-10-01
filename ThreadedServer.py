@@ -6,7 +6,7 @@ import socket
 import ClientThread
 
 
-class Server:
+class ThreadedServer:
 
     # Define some understandable constants
     IP = socket.AF_INET
@@ -49,6 +49,6 @@ class Server:
 
 if __name__ == "__main__":
 
-    server = Server("127.0.0.1", 5001)
+    server = ThreadedServer("127.0.0.1", 5001)
 
     server.run()
