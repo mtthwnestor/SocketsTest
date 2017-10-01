@@ -19,6 +19,7 @@ class ThreadedServer:
         # Please define the listening address and port on initialisation.
         self.host = host
         self.port = port
+        self.threads = []
 
     def run(self):
 
@@ -34,17 +35,22 @@ class ThreadedServer:
             while True:
                 my_sock.listen(5)
                 # Enter waiting and accept incoming connection.
-                connection, address = my_sock.accept()
+                conn, address = my_sock.accept()
 
-                newthread = ClientThread.ClientThread(connection, address)
+                newthread = ClientThread.ClientThread(conn, address)
                 newthread.start()
+
+                self.threads.append(newthread)
         except KeyboardInterrupt:
             # Ctrl+C to exit program.
             print("\nKeyboardInterrupt received. Closing...")
-            connection.close()
+            if self.threads:
+                for thread in self.threads:
+                    thread.conn.shutdown(socket.SHUT_RDWR)
+                    thread.conn.close()
             sys.exit()
-
-        connection.close()
+        except Exception:
+            raise
 
 
 if __name__ == "__main__":

@@ -24,33 +24,43 @@ class Server:
             # Create the socket, bind it to the address and port, and listen for connection.
             my_sock = socket.socket(self.IP, self.TCP)
             my_sock.bind((self.host, self.port))
-            my_sock.listen(1)
         except socket.error as e:
             print(e)
             sys.exit()
 
         try:
-            # Enter waiting and accept incoming connection.
-            connection, address = my_sock.accept()
-            print("Connection from: " + str(address))
-
             while True:
+                my_sock.listen(1)
+                # Enter waiting and accept incoming connection.
+                conn, address = my_sock.accept()
+                print("[+] Connection from: " + str(address))
+
                 # Receive and decode the data.
-                data = connection.recv(1024).decode()
+                data = conn.recv(1024).decode()
                 if not data:
                     break
-                print("From connected user: " + str(data))
+                print(address[0] + ": " + data)
 
                 # Prompt for server's response, then encode and send it.
-                message = input("> ")
-                connection.send(message.encode())
+                message = data
+                conn.send(message.encode())
         except KeyboardInterrupt:
             # Ctrl+C to exit program.
             print("\nKeyboardInterrupt received. Closing...")
-            connection.close()
+            if conn:
+                conn.shutdown(socket.SHUT_RDWR)
+                conn.close()
+                print("[-] " + address[0] + "disconnected.")
             sys.exit()
+        except Exception:
+            if conn:
+                conn.shutdown(socket.SHUT_RDWR)
+                conn.close()
+                print("[-] " + address[0] + "disconnected.")
+            raise
 
-        connection.close()
+        conn.shutdown(socket.SHUT_RDWR)
+        conn.close()
 
 
 if __name__ == "__main__":

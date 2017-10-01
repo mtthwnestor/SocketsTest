@@ -27,7 +27,7 @@ class Client:
         # Show initial prompt
         message = input("> ")
         try:
-            while True:
+            while message != "/quit":
                 # Start loop sending and receiving data.
                 my_sock.send(message.encode())
 
@@ -35,11 +35,18 @@ class Client:
                 print("Received from server: " + data)
 
                 message = input("> ")
+
+            my_sock.shutdown(socket.SHUT_RDWR)
+            my_sock.close()
+            sys.exit()
         except KeyboardInterrupt:
             # Ctrl+C to exit program.
             print("\nKeyboardInterrupt received. Closing...")
+            my_sock.shutdown(socket.SHUT_RDWR)
             my_sock.close()
             sys.exit()
+        except Exception:
+            raise
 
 
 if __name__ == "__main__":

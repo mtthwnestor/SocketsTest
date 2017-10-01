@@ -1,27 +1,36 @@
+import socket
 from threading import Thread
 
 
 class ClientThread(Thread):
 
-    def __init__(self, connection, address):
+    def __init__(self, conn, address):
         Thread.__init__(self)
 
-        self.connection = connection
+        self.conn = conn
         self.address = address
 
-        print("[+] New connection from: " + str(address))
+        print("[+] New connection from: " + address[0])
 
     def run(self):
 
+        data = ""
         try:
-            #TODO: Handle each thread response better.
-            while True:
-                data = self.connection.recv(1024).decode()
-                print(str(self.address) + ": " + str(data))
+            while data != "/quit":
+                data = self.conn.recv(1024).decode()
+                if not data:
+                    break
+                print(self.address[0] + ": " + data)
 
-                message = input("> ")
-                self.connection.send(message.encode())
-        #TODO: Figure out how to handle closed connections.
+                message = data
+                self.conn.send(message.encode())
+
+            self.conn.shutdown(socket.SHUT_RDWR)
+            self.conn.close()
+            print("[-] Closed connection: " + self.address[0])
         except KeyboardInterrupt:
-            print("Closed connection: " + self.address)
-            self.connection.close()
+            self.conn.shutdown(socket.SHUT_RDWR)
+            self.conn.close()
+            print("[-] Closed connection: " + self.address[0])
+        except Exception:
+            raise
